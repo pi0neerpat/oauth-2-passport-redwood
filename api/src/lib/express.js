@@ -31,7 +31,9 @@ passport.use(
       tokenURL: process.env.PASSPORT_TOKEN_URL,
       clientID: process.env.PASSPORT_CLIENT_ID,
       clientSecret: process.env.PASSPORT_CLIENT_SECRET,
-      callbackURL: `${process.env.APP_DOMAIN}/auth/callback`,
+      callbackURL: `${process.env.APP_DOMAIN}/auth/chess/callback`,
+      state: true,
+      pkce: true,
     },
     function (accessToken, refreshToken, profile, cb) {
       db.user.findOrCreate({ exampleId: profile.id }, function (err, user) {
@@ -41,12 +43,23 @@ passport.use(
   )
 )
 
-app.get('/', function (req, res) {
-  res.send(200) //auth.ejs
-})
+app.get(
+  '/auth/chess',
+  passport.authenticate('oauth2', {
+    failureRedirect: '/login',
+    scope: ['openid', 'profile'],
+    // state
+    // codeChallenge
+    code_challenge_method: 'S256',
+  }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/')
+  }
+)
 
 app.get(
-  '/auth/login',
+  '/auth/chess/callback',
   passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function (req, res) {
     // Successful authentication, redirect home.
