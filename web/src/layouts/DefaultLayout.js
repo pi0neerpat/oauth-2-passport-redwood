@@ -10,7 +10,7 @@ const DefaultLayout = ({ children }) => {
 
   let userMetadata = {}
   try {
-    userMetadata = JSON.parse(localStorage.getItem('chess_com_auth_token'))
+    userMetadata = JSON.parse(localStorage.getItem('oauth2_token'))
   } catch (e) {
     console.log('User is not logged in')
   }
@@ -45,7 +45,7 @@ const DefaultLayout = ({ children }) => {
       className="rect-button w-full mt-5"
       role="link"
     >
-      Chess.com Login
+      OAuth2 Login
     </button>
   )
 

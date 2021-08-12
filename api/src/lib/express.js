@@ -2,10 +2,11 @@ import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
 import passport from 'passport'
-import OAuth2Strategy from 'passport-oauth2'
+// import OAuth2Strategy from 'passport-oauth2'
+import {OAuth2Strategy as GoogleStrategy} = from 'passport-google-oauth'
+
 import express from 'express'
 import session from 'express-session'
-
 const app = express()
 
 // TODO: If you have your node.js behind a proxy and are using secure: true, you need to set "trust proxy" in express
@@ -25,26 +26,36 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.use(
-  new OAuth2Strategy(
-    {
-      authorizationURL: process.env.PASSPORT_AUTHORIZATION_URL,
-      tokenURL: process.env.PASSPORT_TOKEN_URL,
-      clientID: process.env.PASSPORT_CLIENT_ID,
-      clientSecret: process.env.PASSPORT_CLIENT_SECRET,
-      callbackURL: `${process.env.APP_DOMAIN}/auth/chess/callback`,
-      state: true,
-      pkce: true,
-    },
-    function (accessToken, refreshToken, profile, cb) {
-      db.user.findOrCreate({ exampleId: profile.id }, function (err, user) {
-        return cb(err, user)
-      })
+  new GoogleStrategy({
+    clientID: process.env.PASSPORT_CLIENT_ID,
+    clientSecret: process.env.PASSPORT_CLIENT_SECRET,
+    callbackURL: "http://127.0.0.1:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+      userProfile = profile;
+      return done(null, userProfile);
     }
-  )
+)
+  // new OAuth2Strategy(
+  //   {
+  //     authorizationURL: process.env.PASSPORT_AUTHORIZATION_URL,
+  //     tokenURL: process.env.PASSPORT_TOKEN_URL,
+  //     clientID: process.env.PASSPORT_CLIENT_ID,
+  //     // clientSecret: process.env.PASSPORT_CLIENT_SECRET, // You might need this
+  //     callbackURL: `${global.__REDWOOD__API_PROXY_PATH}/auth/callback`,
+  //     state: true,
+  //     pkce: true,
+  //   },
+  //   function (accessToken, refreshToken, profile, cb) {
+  //     db.user.findOrCreate({ exampleId: profile.id }, function (err, user) {
+  //       return cb(err, user)
+  //     })
+  //   }
+  // )
 )
 
 app.get(
-  '/auth/chess',
+  '/auth',
   passport.authenticate('oauth2', {
     failureRedirect: '/login',
     scope: ['openid', 'profile'],
@@ -59,7 +70,7 @@ app.get(
 )
 
 app.get(
-  '/auth/chess/callback',
+  '/auth/callback',
   passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function (req, res) {
     // Successful authentication, redirect home.
