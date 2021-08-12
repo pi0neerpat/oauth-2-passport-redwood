@@ -1,3 +1,4 @@
+import serverless from 'serverless-http'
 import app from 'src/lib/express'
 /**
  * The handler function is your code that processes http request events.
@@ -15,4 +16,4 @@ import app from 'src/lib/express'
  * @param { Context } context - contains information about the invocation,
  * function, and execution environment.
  */
-export const handler = app
+export const handler = serverless(app)

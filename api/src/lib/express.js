@@ -41,21 +41,13 @@ passport.use(
   )
 )
 
+app.get('/', function (req, res) {
+  res.send(200) //auth.ejs
+})
+
 app.get(
   '/auth/login',
-  () => {
-    logger.info('Invoked auth function')
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: 'Permitted',
-      }),
-    }
-    passport.authenticate('oauth2', { failureRedirect: '/login' })
-  },
+  passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function (req, res) {
     // Successful authentication, redirect home.
     res.redirect('/')
