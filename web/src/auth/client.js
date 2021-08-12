@@ -3,22 +3,21 @@
 import { getErrorResponse } from 'src/auth/helpers'
 import { LOCAL_TOKEN_KEY, WALLET_TYPES } from 'src/auth/constants'
 
-// import {  } from 'src/auth/passport'
-import { isProduction } from 'src/utils/helpers'
+import { loginWithPassport } from 'src/auth/passport'
 
 class PassportAuthClient {
   constructor({ debug = false } = {}) {
     this.debug = debug
 
-    torus.init()
-    this.torus = torus
+    // torus.init()
+    // this.torus = torus
   }
 
   async login(type = WALLET_TYPES.torus) {
     try {
       let walletUserData
       try {
-        walletUserData = await loginWithTorus()
+        walletUserData = await loginWithPassport()
       } catch (e) {
         console.log(e)
         throw Error('Error logging in with Torus')
