@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@redwoodjs/api": "0.35.2",
+    "connect-pg-simple": "^6.2.1",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "passport": "^0.4.1",

@@ -22,7 +22,7 @@ class PassportAuthClient {
         console.log(e)
         throw Error('Error logging in with Torus')
       }
-      if (!isProduction) console.log(walletUserData)
+      // if (!isProduction) console.log(walletUserData)
       localStorage.setItem(LOCAL_TOKEN_KEY, JSON.stringify(walletUserData))
     } catch (e) {
       console.log(
