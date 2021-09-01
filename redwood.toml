@@ -8,6 +8,7 @@
 [web]
   port = 8910
   apiProxyPath = "/.redwood/functions"
+  title = "OAuth2 Passport RedwoodJS Demo"
 [api]
   port = 8911
 [browser]
