@@ -8,12 +8,17 @@ generator client {
   binaryTargets = "native"
 }
 
-// Define your own datamodels here and run `yarn redwood prisma migrate dev`
-// to create migrations for them and apply to your dev DB.
-// TODO: Please remove the following example:
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
+  id    String     @id @default(uuid())
   name  String?
-  oauthId String
+  oAuth           OAuth? @relation(fields: [oAuthId], references: [id])
+  oAuthId         String?
+}
+
+model OAuth {
+  id           String   @id @default(uuid())
+  accessToken  String
+  refreshToken String? // Google doesn't issue refresh tokens?
+  expiration   DateTime?
+  User         User?
 }

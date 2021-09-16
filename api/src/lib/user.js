@@ -9,7 +9,7 @@ export const fetchUser = async (input) => {
   if (!user) {
     user = await db.user.create({
       data: {
-        oauthId: id,
+        id,
         email,
         name: displayName,
       },

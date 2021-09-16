@@ -1,6 +1,5 @@
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
-import { fetchUser } from 'src/lib/user'
 
 import passport from 'passport'
 // import OAuth2Strategy from 'passport-oauth2'
@@ -52,8 +51,32 @@ passport.use(
       callbackURL: 'http://localhost:8911/auth/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log({ profile })
-      const user = await fetchUser(profile)
+      console.log({ profile: { ...profile, accessToken, refreshToken } })
+      // TODO:  Get token expiration?
+      let expiration
+      const user = await db.user.upsert({
+        where: { id: profile.id },
+        create: {
+          id: profile.id,
+          name: profile.displayName,
+          oAuth: {
+            create: {
+              accessToken,
+              refreshToken,
+              expiration,
+            },
+          },
+        },
+        update: {
+          oAuth: {
+            update: {
+              accessToken,
+              refreshToken,
+              expiration,
+            },
+          },
+        },
+      })
       console.log({ user })
       return done(null, user)
     }
@@ -89,7 +112,7 @@ app.get(
   }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect('localhost:8910')
+    res.redirect('localhost:8910/profile')
   }
 )
 
@@ -101,7 +124,7 @@ app.get(
     // req.session.user = userProfile
     // console.log(req.session.user)
     // Successful authentication, redirect home.
-    res.redirect('localhost:8910')
+    res.redirect('localhost:8910/profile')
   }
 )
 

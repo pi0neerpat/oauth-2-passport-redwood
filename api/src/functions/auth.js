@@ -1,5 +1,5 @@
 import serverless from 'serverless-http'
-import app from 'src/lib/express'
+import passportExpressApp from 'src/lib/passport'
 /**
  * The handler function is your code that processes http request events.
  * You can use return and throw to send a response or error, respectively.
@@ -16,4 +16,4 @@ import app from 'src/lib/express'
  * @param { Context } context - contains information about the invocation,
  * function, and execution environment.
  */
-export const handler = serverless(app)
+export const handler = serverless(passportExpressApp)
